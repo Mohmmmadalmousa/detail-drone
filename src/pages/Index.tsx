@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Upload, Search, Lightbulb, ChartBar as BarChart3 } from "lucide-react";
+import { Upload, Lightbulb, ChartBar as BarChart3 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -14,9 +14,6 @@ const Index = () => {
     category: "",
     details: ""
   });
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResult, setSearchResult] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
   const [ideaResult, setIdeaResult] = useState("");
   const [showIdeaResult, setShowIdeaResult] = useState(false);
   const [isGeneratingIdeas, setIsGeneratingIdeas] = useState(false);
@@ -180,98 +177,18 @@ const Index = () => {
     }
   };
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    
-    setIsSearching(true);
-    
-    try {
-      // Simulate AI search response based on query type
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      let response = "";
-      
-      if (searchQuery.toLowerCase().includes("news") || searchQuery.toLowerCase().includes("breaking") || searchQuery.toLowerCase().includes("latest")) {
-        response = `# Latest News: ${searchQuery}
-
-Based on current information, here's what I found:
-
-## Key Headlines
-• Breaking developments in the topic you searched for
-• Latest updates from reliable news sources
-• Expert analysis and commentary
-• Timeline of recent events
-
-## Detailed Analysis
-This comprehensive overview covers the most important aspects of your news query. The information is gathered from multiple verified sources to provide you with accurate, up-to-date content.
-
-**Sources:** Reuters, BBC, Associated Press, CNN
-**Last Updated:** ${new Date().toLocaleDateString()}`;
-      } else if (searchQuery.toLowerCase().includes("skincare") || searchQuery.toLowerCase().includes("product") || searchQuery.toLowerCase().includes("review")) {
-        response = `# Product Information: ${searchQuery}
-
-## Product Overview
-Here's detailed information about the products you're looking for:
-
-## Top Recommendations
-• **Premium Choice:** High-end option with proven results
-• **Best Value:** Quality product at competitive price
-• **Budget-Friendly:** Affordable yet effective alternative
-
-## Key Features & Benefits
-• Scientifically proven ingredients
-• Suitable for various skin types
-• Positive user reviews and ratings
-• Available through trusted retailers
-
-## User Reviews
-Based on thousands of customer reviews, these products consistently deliver excellent results with minimal side effects.
-
-**Rating:** 4.5/5 stars
-**Price Range:** $15-$150`;
-      } else {
-        response = `# Information About: ${searchQuery}
-
-## Overview
-Here's comprehensive information about your query:
-
-## Key Points
-• Detailed explanation of the topic
-• Important facts and figures
-• Latest developments and trends
-• Expert insights and analysis
-
-## Additional Context
-This information is compiled from multiple reliable sources to give you a complete understanding of the topic you're interested in.
-
-## Related Topics
-You might also be interested in exploring related subjects that connect to your search query.
-
-**Last Updated:** ${new Date().toLocaleDateString()}`;
-      }
-      
-      setSearchResult(response);
-      
-      toast({
-        title: "Search Complete!",
-        description: "AI has found detailed information for your query.",
-      });
-    } catch (error) {
-      toast({
-        title: "Search Error",
-        description: "Failed to get search results. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
       {/* Video Background */}
       <div className="fixed inset-0 z-0">
+        <video
+          autoPlay
+          muted
+          loop
+          className="w-full h-full object-cover"
+        >
+          <source src="/background-video.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/60 via-blue-800/70 to-blue-900/80"></div>
       </div>
 
@@ -280,7 +197,6 @@ You might also be interested in exploring related subjects that connect to your 
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="text-2xl font-bold text-white tracking-wide">MediaLens</div>
           <nav className="hidden md:flex space-x-8">
-            <a href="#search" className="text-blue-200 hover:text-white transition-colors">Search</a>
             <a href="#ideas" className="text-blue-200 hover:text-white transition-colors">Ideas</a>
             <a href="#analyze" className="text-blue-200 hover:text-white transition-colors">Analyze</a>
           </nav>
@@ -301,76 +217,16 @@ You might also be interested in exploring related subjects that connect to your 
           Stay connected. Create standout ideas.
         </h1>
         <p className="text-xl text-blue-200 mb-8 max-w-2xl mx-auto">
-          AI-powered search, content ideas, and media analysis for creators.
+          Content ideas and media analysis for creators.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button size="lg" className="bg-blue-500 hover:bg-blue-400 text-white px-8">
-            <Search className="mr-2 h-5 w-5" />
-            Start Searching
-          </Button>
-          <Button size="lg" variant="outline" className="text-white border-white/30 hover:bg-white/10">
             <Lightbulb className="mr-2 h-5 w-5" />
             Get Ideas
           </Button>
-        </div>
-      </section>
-
-      {/* AI Search Section */}
-      <section id="search" className="relative z-10 py-16 px-6">
-        <div className="container mx-auto max-w-4xl">
-          <Card className="backdrop-blur-md bg-blue-900/40 border-blue-400/30 p-8">
-            <div className="text-center mb-8">
-              <Search className="mx-auto h-12 w-12 text-blue-400 mb-4" />
-              <h2 className="text-3xl font-bold text-white mb-4">AI-Powered Search</h2>
-              <p className="text-blue-200">
-                Ask about anything - news, products, or any topic. Get detailed, comprehensive information.
-              </p>
-            </div>
-            
-            <form onSubmit={handleSearch} className="space-y-6">
-              <div className="relative">
-                <Input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Ask about news, skincare products, or any topic..."
-                  className="bg-blue-900/50 border-blue-400/30 text-white placeholder:text-blue-300 text-lg py-4"
-                  required
-                />
-              </div>
-              
-              <div className="flex justify-end">
-                <Button 
-                  type="submit" 
-                  disabled={isSearching}
-                  className="bg-blue-500 hover:bg-blue-400 text-white px-8"
-                >
-                  {isSearching ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Searching...
-                    </>
-                  ) : (
-                    <>
-                      <Search className="mr-2 h-4 w-4" />
-                      Search
-                    </>
-                  )}
-                </Button>
-              </div>
-            </form>
-
-            {searchResult && (
-              <div className="mt-8 p-6 bg-blue-900/60 border border-blue-400/30 rounded-lg">
-                <h3 className="text-xl font-semibold text-white mb-4">Search Results</h3>
-                <div className="prose prose-invert max-w-none">
-                  <div 
-                    className="text-blue-100 leading-relaxed whitespace-pre-line"
-                    dangerouslySetInnerHTML={{ __html: searchResult.replace(/\n/g, '<br>') }}
-                  />
-                </div>
-              </div>
-            )}
-          </Card>
+          <Button size="lg" variant="outline" className="text-white border-white/30 hover:bg-white/10">
+            Analyze Media
+          </Button>
         </div>
       </section>
 
@@ -380,9 +236,9 @@ You might also be interested in exploring related subjects that connect to your 
           <Card className="backdrop-blur-md bg-blue-900/40 border-blue-400/30 p-8">
             <div className="text-center mb-8">
               <Lightbulb className="mx-auto h-12 w-12 text-blue-400 mb-4" />
-              <h2 className="text-3xl font-bold text-white mb-4">AI Content Ideas</h2>
+              <h2 className="text-3xl font-bold text-white mb-4">Content Ideas Generator</h2>
               <p className="text-blue-200">
-                Enter what you're interested in and choose a category. Get AI-powered content ideas and suggestions.
+                Enter what you're interested in and choose a category. Get personalized content ideas and suggestions.
               </p>
             </div>
 
